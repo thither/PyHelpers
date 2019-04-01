@@ -9,16 +9,31 @@ include_dirs = [sysconfig.get_python_inc(plat_specific=True), '/usr/local/includ
 
 
 extenstions = [
-    Extension('pyhelpers.udp_dispatcher',
-              sources=['pyhelpers/udp_dispatcher.cc'],
+    Extension('pyhelpers.udp_handler_dest',
+              sources=['pyhelpers/udp_handler_dest.cc'],
               include_dirs=include_dirs,
-              libraries=[],
+              libraries=['tcmalloc_minimal'],
               library_dirs=library_dirs,
               extra_compile_args=['-D_LARGEFILE_SOURCE', '-D_FILE_OFFSET_BITS=64', '-m64', '-D_REENTRANT', '-DNDEBUG',
                                   '-s', '-static-libgcc', '-static-libstdc++', '-fPIC', '-std=c++17',
-                                  '-O3', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-floop-interchange'],
+                                  '-O3', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-floop-interchange',
+                                  '-fno-builtin-malloc', '-fno-builtin-calloc', '-fno-builtin-realloc', '-fno-builtin-free'],
               # language='c++17',
               ),
+    # from pyhelpers.udp_handler_dest import UdpHandlerDest
+    Extension('pyhelpers.tcmalloc',
+              sources=['pyhelpers/tcmalloc.cc'],
+              include_dirs=include_dirs,
+              libraries=['tcmalloc_minimal'],
+              library_dirs=library_dirs,
+              extra_compile_args=['-D_LARGEFILE_SOURCE', '-D_FILE_OFFSET_BITS=64', '-m64', '-D_REENTRANT', '-DNDEBUG',
+                                  '-s', '-static-libgcc', '-static-libstdc++', '-fPIC', '-std=c++17',
+                                  '-O3', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-floop-interchange',
+                                  '-DTCMALLOC_MINIMAL',  #-ltcmalloc', '-lunwind',
+                                  '-fno-builtin-malloc', '-fno-builtin-calloc', '-fno-builtin-realloc', '-fno-builtin-free'],
+              # language='c++17',
+              ),
+    # from pyhelpers.tcmalloc import TCMalloc
 ]
 
 setup(
